@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>POLARITY - Retro Arcade Game</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%23020208'/><circle cx='8' cy='8' r='5' fill='none' stroke='%2300f0ff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+<div class="cabinet">
+  <div class="marquee">PO<span>LARITY</span></div>
+
+  <div class="screen-wrap" id="screenWrap">
+    <canvas id="game" width="400" height="600"></canvas>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <div class="hud">
+      <div class="block">
+        <div class="label">SCORE</div>
+        <div class="value blueish" id="scoreVal">000000</div>
+        <div class="lives" id="lives"></div>
+      </div>
+      <div class="block" style="align-items:flex-end;">
+        <div class="label">HIGH</div>
+        <div class="value" id="highVal">000000</div>
+        <div class="label" id="waveVal" style="margin-top:6px;">WAVE 1</div>
+      </div>
+    </div>
+    <div class="combo-wrap"><div class="combo-val" id="comboVal">COMBO x1</div></div>
+
+    <div class="overlay" id="titleOverlay">
+      <div class="title-sub">WELCOME TO POLARITY</div>
+      <div class="rules">
+        Your ship carries one <b class="blue">POLARITY</b>.<br>
+        Fire only harms enemies of the <b class="blue">same color</b>.<br>
+        Wrong color enemies must be <b class="pink">dodged</b>.<br>
+        Tap <b class="pink">SWAP</b> to flip polarity.<br>
+        Chain kills for <b class="gold">COMBO</b>. Catch gold orbs for <b class="gold">OVERDRIVE</b>.<br>
+        Camping one color too long triggers <span style="color:#ff3b5c;">OVERLOAD</span> — swap often.<br>
+        Every 5th wave: a <span style="color:#ff3b5c;">BOSS</span> that flips color and shoots back.
+      </div>
+      <div class="blink">TAP FIRE TO START</div>
+    </div>
+
+    <div class="overlay hidden" id="overOverlay">
+      <div class="title-big" style="font-size:16px;">GAME OVER</div>
+      <div class="finalscore" id="finalScore">SCORE 000000</div>
+      <div class="highscore" id="highScoreLine">HIGH SCORE 000000</div>
+      <div class="blink">TAP FIRE TO RETRY</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dpad">
+      <div class="btn move" id="btnLeft">◀</div>
+      <div class="btn move" id="btnRight">▶</div>
+    </div>
+    <div class="actions">
+      <div class="btn swap" id="btnSwap">SWAP</div>
+      <div class="btn fire" id="btnFire">FIRE</div>
+    </div>
+  </div>
+  <div class="footer-hint">ARROWS / WASD MOVE &nbsp;•&nbsp; SPACE FIRE &nbsp;•&nbsp; X SWAP</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
