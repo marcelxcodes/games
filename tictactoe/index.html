@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TIC TAC TOE _ marcelxcodes</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="cabinet">
+  <div class="marquee">
+    <h1>TIC · TAC · TOE</h1>
+    <div class="sub">★ RETRO ★</div>
+  </div>
+
+  <div class="screen">
+    <div class="scanlines"></div>
+    <div class="glow-flicker"></div>
+
+    <div class="status-bar">
+      <span id="turnLabel">P1 TURN: X</span>
+      <span id="score">X:0 O:0 DRAW:0</span>
+    </div>
+
+    <div id="message" class="blink">PRESS A CELL TO START</div>
+
+    <div class="board" id="board"></div>
+
+    <div class="controls">
+      <button class="btn-coin" id="resetBtn">⟲ NEW GAME</button>
+    </div>
+  </div>
+
+  <div class="footer-note">2 PLAYER MODE — HIGH SCORE NEVER RESETS</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

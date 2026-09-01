@@ -1,0 +1,251 @@
+
+Style · CSS
+:root{
+  --bg: #0d0221;
+  --bg-deep: #050110;
+  --magenta: #ff2fd0;
+  --cyan: #00fff2;
+  --yellow: #ffe600;
+  --purple: #7b2ff7;
+  --cab: #1a0933;
+  --cab-edge: #3d1a6b;
+  --line: #4a2b8c;
+}
+ 
+*{ box-sizing: border-box; }
+ 
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% 0%, #1a0a3a 0%, var(--bg-deep) 70%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'VT323', monospace;
+  color:var(--cyan);
+  padding:24px;
+  overflow-x:hidden;
+}
+ 
+/* ambient grid floor */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(123,47,247,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123,47,247,0.18) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 100%, black, transparent);
+  z-index:0;
+  animation: drift 8s linear infinite;
+}
+@keyframes drift{
+  from{ background-position: 0 0, 0 0; }
+  to{ background-position: 0 40px, 40px 0; }
+}
+ 
+.cabinet{
+  position:relative;
+  z-index:1;
+  width:min(94vw, 480px);
+  background:
+    linear-gradient(180deg, var(--cab) 0%, #120726 100%);
+  border:3px solid var(--cab-edge);
+  border-radius:18px;
+  padding:22px 22px 26px;
+  box-shadow:
+    0 0 0 6px var(--bg-deep),
+    0 0 0 8px var(--cab-edge),
+    0 20px 60px rgba(0,0,0,0.7),
+    0 0 40px rgba(255,47,208,0.15);
+}
+ 
+.marquee{
+  text-align:center;
+  margin-bottom:14px;
+}
+.marquee h1{
+  font-family:'Press Start 2P', monospace;
+  font-size:clamp(15px, 4.6vw, 22px);
+  margin:0;
+  letter-spacing:1px;
+  line-height:1.6;
+  background: linear-gradient(90deg, var(--magenta), var(--yellow), var(--cyan));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  filter: drop-shadow(0 0 10px rgba(255,47,208,0.5));
+  text-shadow:none;
+}
+.marquee .sub{
+  font-size:14px;
+  letter-spacing:3px;
+  color:var(--cyan);
+  opacity:0.8;
+  text-shadow:0 0 6px var(--cyan);
+}
+ 
+/* screen bezel */
+.screen{
+  position:relative;
+  background: #030014;
+  border-radius:8px;
+  padding:18px;
+  border:2px solid #000;
+  box-shadow:
+    inset 0 0 30px rgba(0,255,242,0.12),
+    inset 0 0 3px rgba(0,0,0,0.9);
+  overflow:hidden;
+}
+.scanlines{
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.05) 0px,
+    rgba(255,255,255,0.05) 1px,
+    transparent 2px,
+    transparent 3px
+  );
+  mix-blend-mode:overlay;
+  z-index:5;
+}
+.glow-flicker{
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,0.02);
+  animation: flicker 4s infinite steps(20);
+  z-index:5;
+}
+@keyframes flicker{
+  0%,100%{opacity:0;}
+  50%{opacity:1;}
+  52%{opacity:0;}
+}
+ 
+.status-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+  margin-bottom:14px;
+  position:relative;
+  z-index:2;
+}
+.status-bar span{ color:var(--yellow); text-shadow:0 0 6px var(--yellow); }
+#score{ color:var(--magenta); text-shadow:0 0 6px var(--magenta); }
+ 
+#message{
+  text-align:center;
+  font-family:'Press Start 2P', monospace;
+  font-size:clamp(11px, 3.4vw, 14px);
+  color:var(--yellow);
+  text-shadow:0 0 8px var(--yellow);
+  min-height:34px;
+  margin-bottom:14px;
+  letter-spacing:1px;
+  position:relative;
+  z-index:2;
+}
+#message.blink{ animation: blink 1s steps(1) infinite; }
+@keyframes blink{ 50%{ opacity:0.25; } }
+ 
+.board{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px;
+  aspect-ratio:1/1;
+}
+ 
+.cell{
+  background: #0a0420;
+  border:2px solid var(--line);
+  border-radius:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Press Start 2P', monospace;
+  font-size:clamp(28px, 9vw, 46px);
+  line-height:1;
+  cursor:pointer;
+  position:relative;
+  transition: border-color .15s, background .15s;
+  user-select:none;
+  transform-origin:center center;
+  backface-visibility:hidden;
+}
+.cell:hover:not(.taken){
+  border-color:var(--cyan);
+  background:#0f0730;
+}
+.cell.taken{ cursor:default; }
+ 
+.cell.x{ color:var(--cyan); text-shadow:0 0 12px var(--cyan), 0 0 24px rgba(0,255,242,0.5); }
+.cell.o{ color:var(--magenta); text-shadow:0 0 12px var(--magenta), 0 0 24px rgba(255,47,208,0.5); }
+ 
+.cell.pop{ animation: pop .22s ease-out; }
+@keyframes pop{
+  0%{ transform:scale(0.3) rotate(0deg); opacity:0; }
+  70%{ transform:scale(1.1) rotate(0deg); opacity:1; }
+  100%{ transform:scale(1) rotate(0deg); }
+}
+ 
+.cell.win{
+  background: rgba(255, 230, 0, 0.12);
+  border-color: var(--yellow);
+  animation: winpulse .6s ease-in-out infinite;
+}
+@keyframes winpulse{
+  0%,100%{ box-shadow: 0 0 6px var(--yellow) inset; }
+  50%{ box-shadow: 0 0 20px var(--yellow) inset; }
+}
+ 
+.controls{
+  display:flex;
+  justify-content:center;
+  margin-top:18px;
+  position:relative;
+  z-index:2;
+}
+ 
+.btn-coin{
+  font-family:'Press Start 2P', monospace;
+  font-size:11px;
+  padding:12px 20px;
+  background: linear-gradient(180deg, var(--purple), #4a1a99);
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  border-bottom:4px solid #2c0e66;
+  cursor:pointer;
+  letter-spacing:1px;
+  text-shadow:0 0 6px rgba(255,255,255,0.6);
+  transition: transform .08s, border-bottom-width .08s;
+}
+.btn-coin:hover{ filter:brightness(1.15); }
+.btn-coin:active{
+  transform: translateY(3px);
+  border-bottom-width:1px;
+}
+ 
+.footer-note{
+  text-align:center;
+  margin-top:14px;
+  font-size:13px;
+  color:var(--purple);
+  opacity:0.8;
+  letter-spacing:2px;
+}
+ 
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+  body::before{ animation:none; }
+}
+ 
