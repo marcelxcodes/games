@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TIC TAC TOE _ marcelxcodes</title>
+<title>TIC TAC TOE // ARCADE</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="cabinet">
   <div class="marquee">
     <h1>TIC · TAC · TOE</h1>
-    <div class="sub">★ RETRO ★</div>
+    <div class="sub">★ ARCADE EDITION ★</div>
   </div>
 
   <div class="screen">
@@ -28,7 +28,15 @@
     <div class="board" id="board"></div>
 
     <div class="controls">
-      <button class="btn-coin" id="resetBtn">⟲ NEW GAME</button>
+      <button class="btn-coin" id="resetBtn">⟲ INSERT COIN / RESET</button>
+    </div>
+
+    <div class="theme-picker" id="themePicker" role="group" aria-label="Theme selection">
+      <span class="theme-label">THEME:</span>
+      <button class="theme-btn active" data-theme="vice" type="button"><span class="sw s1"></span><span class="sw s2"></span><span class="sw s3"></span>VICE</button>
+      <button class="theme-btn" data-theme="serene" type="button"><span class="sw s1"></span><span class="sw s2"></span><span class="sw s3"></span>SERENE</button>
+      <button class="theme-btn" data-theme="sunset" type="button"><span class="sw s1"></span><span class="sw s2"></span><span class="sw s3"></span>SUNSET</button>
+      <button class="theme-btn" data-theme="space" type="button"><span class="sw s1"></span><span class="sw s2"></span><span class="sw s3"></span>SPACE</button>
     </div>
   </div>
 
