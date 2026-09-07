@@ -4,6 +4,10 @@
   const turnLabel = document.getElementById('turnLabel');
   const scoreEl = document.getElementById('score');
   const resetBtn = document.getElementById('resetBtn');
+  const themePicker = document.getElementById('themePicker');
+
+  const THEMES = ['vice', 'serene', 'sunset', 'space'];
+  const THEME_KEY = 'ttt-theme';
 
   const WIN_LINES = [
     [0,1,2],[3,4,5],[6,7,8],
@@ -95,6 +99,24 @@
   }
 
   resetBtn.addEventListener('click', resetGame);
+
+  function applyTheme(name){
+    if(!THEMES.includes(name)) name = 'vice';
+    document.body.dataset.theme = name;
+    themePicker.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === name);
+    });
+    try { localStorage.setItem(THEME_KEY, name); } catch(e){ /* storage unavailable */ }
+  }
+
+  themePicker.addEventListener('click', e => {
+    const btn = e.target.closest('.theme-btn');
+    if(btn) applyTheme(btn.dataset.theme);
+  });
+
+  let savedTheme = 'vice';
+  try { savedTheme = localStorage.getItem(THEME_KEY) || 'vice'; } catch(e){ /* storage unavailable */ }
+  applyTheme(savedTheme);
 
   buildBoard();
   renderScore();
