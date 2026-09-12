@@ -1,8 +1,3 @@
-"""Math Beats Asteroids - a small arcade maths game built with pygame.
-
-The game intentionally keeps its save file next to this script so it works when
-launched from an IDE, a terminal, or a desktop shortcut.
-"""
 from __future__ import annotations
 
 import csv
@@ -187,10 +182,7 @@ class MathBeatsAsteroids:
         self.bullet: Optional[pygame.Rect] = None
         self.asteroid = pygame.Rect(0, -80, 72, 72)
         self.asteroid_speed = 110.0
-        # Two-font type system: futuristic display face + highly legible UI face.
-        # Use a bundled/fallback futuristic display face and a clean UI face.
-        # DejaVu Sans is available with the local Python/Pygame installation and
-        # keeps the game portable without downloading assets at runtime.
+        self.bullet_speed = 1100.0
         self.fonts = {
             "title": pygame.font.SysFont("dejavusans", 62, bold=True),
             "hero": pygame.font.SysFont("dejavusans", 38, bold=True),
@@ -324,6 +316,7 @@ class MathBeatsAsteroids:
         self.message = ""
         self.bullet = None
         self.asteroid_speed = 110.0
+        self.bullet_speed = 1100.0
         self.asteroid = pygame.Rect(WIDTH // 2 - 38, -85, 76, 76)
         self.question = make_question(mode, self.score, self.rng)
         self.state = "game"
@@ -376,21 +369,34 @@ class MathBeatsAsteroids:
         self.feedback_color = color
         self.message_until = pygame.time.get_ticks() + 1400
 
+    def ship_rect(self) -> pygame.Rect:
+        return self.assets["ship"].get_rect(center=(WIDTH // 2, HEIGHT - 55))
+
+    def fit_text(self, value: str, max_width: int) -> pygame.Surface:
+        """Render text at the largest font size that fits the given width."""
+        for size in (30, 26, 23, 21, 19, 17):
+            surface = pygame.font.SysFont("dejavusans", size, bold=True).render(value, True, WHITE)
+            if surface.get_width() <= max_width:
+                return surface
+        return surface
+
     def update_game(self, dt: float) -> None:
         self.elapsed += dt
         self.asteroid.y += int(self.asteroid_speed * dt)
         if self.bullet:
-            self.bullet.y -= int(650 * dt)
+            self.bullet.y -= int(self.bullet_speed * dt)
             if self.bullet.bottom < 0:
                 self.bullet = None
             elif self.bullet.colliderect(self.asteroid):
                 self.play_sound("hit")
                 self.bullet = None
                 self.next_asteroid()
-        if self.asteroid.top > HEIGHT - 80:
+        if self.asteroid.colliderect(self.ship_rect()):
             self.lives -= 1
             self.play_sound("hit")
             self.set_message("ASTEROID GOT THROUGH!", RED)
+            # The laser charges faster after every ship hit to help the comeback.
+            self.bullet_speed = min(self.bullet_speed + 60.0, 1800.0)
             self.next_asteroid()
             if self.lives <= 0:
                 self.finish_game(False)
@@ -426,24 +432,28 @@ class MathBeatsAsteroids:
     def draw_game(self) -> None:
         self.background()
         self.draw_hud()
-        ship_rect = self.assets["ship"].get_rect(center=(WIDTH // 2, HEIGHT - 55))
+        ship_rect = self.ship_rect()
         self.screen.blit(self.assets["ship"], ship_rect)
         self.screen.blit(self.assets["rock"], self.asteroid)
         if self.bullet:
             self.screen.blit(self.assets["bullet"], self.bullet)
 
-        question_panel = pygame.Rect(70, 145, WIDTH - 140, 205)
+        # Compact question panel sits on the right side, below the time HUD,
+        # so the center column stays clear for the falling asteroid.
+        question_panel = pygame.Rect(WIDTH - 290, 110, 270, 160)
         self.panel(question_panel)
-        self.draw_text(MODE_NAMES[self.mode].upper(), (WIDTH // 2, 177), "small", CYAN, center=True)
-        self.draw_text(self.question.text, (WIDTH // 2, 222), "number", WHITE, center=True)
-        input_box = pygame.Rect(WIDTH // 2 - 180, 260, 360, 58)
+        self.draw_text(MODE_NAMES[self.mode].upper(), (WIDTH - 270, 126), "small", CYAN)
+        question_surface = self.fit_text(self.question.text, 240)
+        question_rect = question_surface.get_rect(center=(question_panel.centerx, 165))
+        self.screen.blit(question_surface, question_rect)
+        input_box = pygame.Rect(WIDTH - 270, 200, 230, 48)
         pygame.draw.rect(self.screen, DARK, input_box, border_radius=10)
         pygame.draw.rect(self.screen, BLUE, input_box, 2, border_radius=10)
         self.draw_text(self.answer_input or "answer", input_box.center, "heading", WHITE if self.answer_input else MUTED, center=True)
-        self.draw_text("Enter to fire  •  Backspace to erase  •  Esc to pause", (WIDTH // 2, 334), "small", MUTED, center=True)
+        self.draw_text("Enter to fire  •  Backspace to erase  •  Esc to pause", (20, HEIGHT - 28), "small", MUTED)
         now = pygame.time.get_ticks()
         if self.feedback and now < self.feedback_until:
-            self.draw_text(self.feedback, (WIDTH // 2, 385), "heading", self.feedback_color, center=True)
+            self.draw_text(self.feedback, (question_panel.centerx, 292), "heading", self.feedback_color, center=True)
         if self.message and now < self.message_until:
             self.draw_text(self.message, (WIDTH // 2, 420), "body", self.feedback_color, center=True)
 
